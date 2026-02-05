@@ -10,11 +10,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration - allow all origins in production
+// CORS configuration - allow all origins
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? '*' // Allow all origins in production (or specify your frontend URL)
-    : 'http://localhost:3000', // Local development
+  origin: true, // Allow all origins
   credentials: true,
 }));
 app.use(express.json());
@@ -32,15 +30,26 @@ app.use((req, res) => {
 
 const start = async () => {
   try {
+    console.log('Connecting to MongoDB...');
     await connectDB();
+    console.log('MongoDB connected successfully');
+
+    console.log('Initializing default job sources...');
     await schedulerService.initializeDefaultSources();
+    console.log('Default job sources initialized');
+
+    console.log('Starting scheduler...');
     schedulerService.start();
+    console.log('Scheduler started');
 
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`✅ Server running on port ${PORT}`);
+      console.log(`✅ Health check: http://localhost:${PORT}/health`);
+      console.log(`✅ API root: http://localhost:${PORT}/api`);
+      console.log(`✅ Import history: http://localhost:${PORT}/api/import-history`);
     });
   } catch (err) {
-    console.error('Failed to start server', err);
+    console.error('❌ Failed to start server:', err);
     process.exit(1);
   }
 };

@@ -20,11 +20,21 @@ if (process.env.REDIS_URL) {
 const redisClient = new Redis(redisConfig);
 
 redisClient.on('connect', () => {
-  console.log('Redis Connected');
+  console.log('✅ Redis Connected');
+});
+
+redisClient.on('ready', () => {
+  console.log('✅ Redis Ready');
 });
 
 redisClient.on('error', (err) => {
-  console.error('Redis connection error:', err);
+  console.error('⚠️ Redis connection error:', err.message);
+  // Don't exit process - allow server to start without Redis for testing
+  // Queue operations will fail, but API endpoints will work
+});
+
+redisClient.on('close', () => {
+  console.log('⚠️ Redis connection closed');
 });
 
 module.exports = redisClient;
