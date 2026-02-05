@@ -10,7 +10,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// CORS configuration - allow all origins in production
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? '*' // Allow all origins in production (or specify your frontend URL)
+    : 'http://localhost:3000', // Local development
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
