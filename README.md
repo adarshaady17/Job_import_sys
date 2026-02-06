@@ -4,9 +4,8 @@ A scalable job import system that pulls data from external APIs, queues jobs usi
 
 ## 🚀 Quick Deploy to Vercel
 
-**Frontend**: Deploy to Vercel (see [DEPLOYMENT.md](./DEPLOYMENT.md))  
-**Backend**: Deploy to Render/Railway (see [DEPLOYMENT.md](./DEPLOYMENT.md))
-
+**Frontend**: Deploy to Vercel   
+**Backend**: Deploy to Vercel
 ## 📋 Features
 
 - ✅ Fetch jobs from multiple external APIs (XML/JSON support)
@@ -37,8 +36,8 @@ A scalable job import system that pulls data from external APIs, queues jobs usi
 
 ### Prerequisites
 - Node.js (v18+)
-- MongoDB (local or Atlas)
-- Redis (local or cloud)
+- MongoDB (Atlas)
+- Redis (cloud)
 
 ### Setup
 
@@ -70,7 +69,7 @@ cp .env.example .env.local
 cd server
 npm run dev
 
-# Terminal 2: Worker
+# Terminal 2: Worker (REQUIRED - without this, jobs won't be processed!)
 cd server
 npm run worker
 
@@ -79,21 +78,13 @@ cd client
 npm run dev
 ```
 
-## 🌐 Deployment
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
-
-**Quick Summary:**
-- **Frontend**: Deploy `client/` folder to Vercel
-- **Backend**: Deploy `server/` folder to Render/Railway
-- **Worker**: Deploy `server/` as background worker to Render/Railway
-- **Database**: Use MongoDB Atlas (free tier)
-- **Queue**: Use Redis Cloud or Upstash (free tier)
 
 ## 📚 Documentation
 
-- [DEPLOYMENT.md](./DEPLOYMENT.md) - Complete deployment guide
-- [docs/architecture.md](./docs/architecture.md) - System architecture (if exists)
+- [docs/quick-reference.md](./docs/quick-reference.md) - Quick reference guide for common issues
+- [docs/worker-setup.md](./docs/worker-setup.md) - Worker process setup and configuration
+- [docs/troubleshooting-guide.md](./docs/troubleshooting-guide.md) - Comprehensive troubleshooting guide
+- [docs/system-architecture.md](./docs/system-architecture.md) - System architecture and data flow
 
 ## 🔧 Environment Variables
 
@@ -113,6 +104,4 @@ BATCH_SIZE=100
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
-## 📝 License
 
-ISC

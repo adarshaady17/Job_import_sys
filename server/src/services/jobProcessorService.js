@@ -57,14 +57,38 @@ class JobProcessorService {
 
   async updateImportLog(logId, summary) {
     try {
-      await ImportLog.findByIdAndUpdate(logId, {
-        totalImported: summary.new + summary.updated,
-        newJobs: summary.new,
-        updatedJobs: summary.updated,
-        failedJobs: summary.failed,
-        failedReasons: summary.failedReasons,
-        status: 'completed',
-      });
+      // Use $inc to accumulate counts for multiple batches
+      // This ensures counts are added together when multiple batches process the same ImportLog
+      const update = {
+        $inc: {
+          totalImported: summary.new + summary.updated,
+          newJobs: summary.new,
+          updatedJobs: summary.updated,
+          failedJobs: summary.failed,
+        },
+      };
+
+      // Append failed reasons if any
+      if (summary.failedReasons && summary.failedReasons.length > 0) {
+        update.$push = {
+          failedReasons: { $each: summary.failedReasons },
+        };
+      }
+
+      // Update the log with accumulated counts
+      const updatedLog = await ImportLog.findByIdAndUpdate(logId, update, { new: true });
+      
+      // Check if processing is complete by comparing processed count with totalFetched
+      if (updatedLog) {
+        const processedCount = (updatedLog.newJobs || 0) + (updatedLog.updatedJobs || 0) + (updatedLog.failedJobs || 0);
+        const totalFetched = updatedLog.totalFetched || 0;
+        
+        // If we've processed all fetched jobs (or close to it), mark as completed
+        // Use >= to handle edge cases and allow for some margin
+        if (totalFetched > 0 && processedCount >= totalFetched && updatedLog.status === 'processing') {
+          await ImportLog.findByIdAndUpdate(logId, { status: 'completed' });
+        }
+      }
     } catch (err) {
       console.error('Failed updating import log', err);
     }
