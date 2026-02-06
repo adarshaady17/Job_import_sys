@@ -200,10 +200,10 @@ export default function Home() {
                         </a>
                       </td>
                       <td>{formatDate(log.timestamp)}</td>
-                      <td>{log.totalImported}</td>
-                      <td>{log.newJobs}</td>
-                      <td>{log.updatedJobs}</td>
-                      <td>{log.failedJobs}</td>
+                      <td>{log.totalFetched || 0}</td>
+                      <td>{log.newJobs || 0}</td>
+                      <td>{log.updatedJobs || 0}</td>
+                      <td>{log.failedJobs || 0}</td>
                       <td>
                         <span className={`status-badge status-${log.status}`}>{log.status}</span>
                       </td>
